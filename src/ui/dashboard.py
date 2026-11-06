@@ -20,6 +20,7 @@ try:
 except Exception:
     pass
 
+from pathlib import Path
 import json
 import streamlit as st
 from dotenv import load_dotenv
@@ -65,16 +66,64 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+# ─── Dynamic package discovery ────────────────────────────────────────────────
+def discover_claim_packages(data_dir: str = "data") -> dict[str, str]:
+    """Scan data directory and discover available claim packages."""
+    base_path = Path(data_dir)
+    if not base_path.exists():
+        # Fallback if running from a different subfolder
+        base_path = Path(__file__).resolve().parent.parent.parent / "data"
+
+    if not base_path.exists():
+        return {}
+
+    packages = {}
+    for p in sorted(base_path.iterdir()):
+        if p.is_dir() and not p.name.startswith("."):
+            folder_name = p.name
+            is_incomplete = "incomplete" in folder_name.lower()
+            icon = "⚠️ " if is_incomplete else "✅"
+            status_text = "Incomplete Package" if is_incomplete else "Complete Package"
+
+            # Attempt to read claim_profile from claim_information_ocr.json
+            claim_id = ""
+            ocr_file = p / "claim_information_ocr.json"
+            if ocr_file.exists():
+                try:
+                    with open(ocr_file, "r", encoding="utf-8") as f:
+                        meta = json.load(f)
+                        claim_id = meta.get("claim_profile", "")
+                except Exception:
+                    pass
+
+            if not claim_id:
+                # Derive from folder name: e.g. clm_2026_0043 -> CLM-2026-0043
+                if "clm_" in folder_name.lower():
+                    suffix = folder_name.lower().split("clm_")[-1]
+                    claim_id = "CLM-" + suffix.replace("_", "-").upper()
+                else:
+                    claim_id = folder_name
+
+            label = f"{icon} {status_text} ({claim_id})"
+            # Use relative path if possible for cleaner UI display/consistency
+            try:
+                rel_path = str(p.relative_to(Path.cwd()))
+            except ValueError:
+                rel_path = str(p)
+            packages[label] = rel_path
+
+    return packages
+
+
 # ─── Sidebar — package selector ───────────────────────────────────────────────
 st.sidebar.title("🔍 ClaimRecon AI")
 st.sidebar.markdown("---")
 
-PACKAGES = {
-    "✅ Complete Package (CLM-2026-0042)":
-        "data/complete_claim_package_clm_2026_0042",
-    "⚠️  Incomplete Package (CLM-2026-0042)":
-        "data/incomplete_claim_package_clm_2026_0042",
-}
+PACKAGES = discover_claim_packages()
+if not PACKAGES:
+    PACKAGES = {
+        "✅ Complete Package (CLM-2026-0042)": "data/complete_claim_package_clm_2026_0042"
+    }
 
 selected_label = st.sidebar.selectbox(
     "Select Claim Package",
