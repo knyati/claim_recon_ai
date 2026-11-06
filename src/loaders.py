@@ -111,7 +111,8 @@ def read_file_inventory(folder: str) -> list[dict]:
     """Return a list of file metadata dicts for all files in the folder."""
     inventory = []
     for entry in sorted(Path(folder).iterdir()):
-        if entry.is_file() and not entry.name.startswith("."):
+        # Ignore hidden files, temporary files, and MS Office lock files (~$)
+        if entry.is_file() and not entry.name.startswith(".") and not entry.name.startswith("~$"):
             inventory.append(
                 {
                     "filename": entry.name,

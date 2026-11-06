@@ -26,6 +26,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from src.graph import build_graph
+from src.history import save_run
 
 
 def print_separator(char="─", width=60):
@@ -133,6 +134,14 @@ def main():
 
     print()
     print_separator("═")
+    print()
+
+    # ── Persist run record ────────────────────────────────────────────────────
+    try:
+        saved_file = save_run(result)
+        print(f"  [Saved Run Record -> {saved_file}]")
+    except Exception as e:
+        print(f"  [Notice: Could not save run history: {e}]")
     print()
 
 

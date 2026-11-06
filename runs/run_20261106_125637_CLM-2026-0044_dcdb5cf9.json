@@ -1,0 +1,177 @@
+{
+  "run_id": "dcdb5cf9-8602-4435-bd0b-a36c7aa402e5",
+  "timestamp_utc": "2026-11-06T12:56:37.925842",
+  "claim_folder": "data/complete_claim_package_clm_2026_0044",
+  "status": "SUMMARY_READY",
+  "claim": {
+    "claim_profile": "CLM-2026-0044",
+    "insured": "Pinnacle Tech",
+    "loss_date": "2026-09-05",
+    "claimed_stock_amount": "300000.0",
+    "currency": "USD"
+  },
+  "financial_summary": {
+    "claimed_amount": "300000.00",
+    "supported_amount": "275000.00",
+    "unsupported_amount": "25000.00",
+    "difference_amount": "25000.00",
+    "supported_pct": 91.67,
+    "unsupported_pct": 8.33,
+    "currency": "USD",
+    "calculation_complete": true,
+    "breakdown": [
+      {
+        "finding_id": "FND-001",
+        "reason": "INVOICE AMOUNT MISMATCH",
+        "invoice": "INV-11",
+        "amount": "20000.00",
+        "description": "Invoice INV-11 shows $100,000.00 in the purchase ledger but only $80,000.00 on the supplier invoice. The $20,000.00 difference is flagged for deduction.",
+        "evidence": [
+          "purchase_ledger.xlsx:PL-301",
+          "supplier_invoices.xlsx:INV-11"
+        ]
+      },
+      {
+        "finding_id": "FND-002",
+        "reason": "INVOICE AMOUNT MISMATCH",
+        "invoice": "INV-12",
+        "amount": "5000.00",
+        "description": "Invoice INV-12 shows $50,000.00 in the purchase ledger but only $45,000.00 on the supplier invoice. The $5,000.00 difference is flagged for deduction.",
+        "evidence": [
+          "purchase_ledger.xlsx:PL-302",
+          "supplier_invoices.xlsx:INV-12"
+        ]
+      }
+    ]
+  },
+  "check_evaluation": {
+    "status": "COMPLETED",
+    "configured_checks": [
+      "DELIVERY_AFTER_LOSS_V1",
+      "DUPLICATE_INVOICE_V1",
+      "INVOICE_AMOUNT_MISMATCH_V1"
+    ],
+    "completed_checks": [
+      "DELIVERY_AFTER_LOSS_V1",
+      "DUPLICATE_INVOICE_V1",
+      "INVOICE_AMOUNT_MISMATCH_V1"
+    ],
+    "blocked_checks": [],
+    "failed_checks": [],
+    "pending_checks": [],
+    "all_checks_completed": true,
+    "next_action": "CALCULATE_SUPPORTED_AMOUNT",
+    "check_summary": {
+      "configured": 3,
+      "completed": 3,
+      "blocked": 0,
+      "failed": 0,
+      "pending": 0
+    }
+  },
+  "completeness_result": {
+    "is_complete": true,
+    "completeness_pct": 100.0,
+    "required_documents": [
+      "CLAIM_FORM",
+      "DELIVERY_RECORDS",
+      "FIRE_REPORT",
+      "PURCHASE_LEDGER",
+      "SUPPLIER_INVOICES"
+    ],
+    "found_documents": [
+      "CLAIM_FORM",
+      "DELIVERY_RECORDS",
+      "FIRE_REPORT",
+      "GOODS_RECEIPT",
+      "PURCHASE_LEDGER",
+      "SUPPLIER_INVOICES"
+    ],
+    "present_required": [
+      "CLAIM_FORM",
+      "DELIVERY_RECORDS",
+      "FIRE_REPORT",
+      "PURCHASE_LEDGER",
+      "SUPPLIER_INVOICES"
+    ],
+    "missing_documents": []
+  },
+  "integrity_findings": [
+    {
+      "finding_id": "FND-001",
+      "rule_id": "INVOICE_AMOUNT_MISMATCH_V1",
+      "claim_line_key": "INV-11",
+      "financial_treatment": "DEDUCT_DIFFERENCE",
+      "financial_impact": "20000.00",
+      "facts": {
+        "invoice_number": "INV-11",
+        "ledger_amount": "100000.00",
+        "invoice_amount": "80000.00",
+        "difference": "20000.00",
+        "ledger_id": "PL-301",
+        "supplier_name": "SuppE"
+      },
+      "evidence": [
+        "purchase_ledger.xlsx:PL-301",
+        "supplier_invoices.xlsx:INV-11"
+      ],
+      "description": "Invoice INV-11 shows $100,000.00 in the purchase ledger but only $80,000.00 on the supplier invoice. The $20,000.00 difference is flagged for deduction."
+    },
+    {
+      "finding_id": "FND-002",
+      "rule_id": "INVOICE_AMOUNT_MISMATCH_V1",
+      "claim_line_key": "INV-12",
+      "financial_treatment": "DEDUCT_DIFFERENCE",
+      "financial_impact": "5000.00",
+      "facts": {
+        "invoice_number": "INV-12",
+        "ledger_amount": "50000.00",
+        "invoice_amount": "45000.00",
+        "difference": "5000.00",
+        "ledger_id": "PL-302",
+        "supplier_name": "SuppF"
+      },
+      "evidence": [
+        "purchase_ledger.xlsx:PL-302",
+        "supplier_invoices.xlsx:INV-12"
+      ],
+      "description": "Invoice INV-12 shows $50,000.00 in the purchase ledger but only $45,000.00 on the supplier invoice. The $5,000.00 difference is flagged for deduction."
+    }
+  ],
+  "supervisor_plan": {
+    "selected_tools": [
+      {
+        "tool": "check_duplicate_invoices",
+        "reason": "LLM unavailable \u2014 auto-selected"
+      },
+      {
+        "tool": "check_delivery_after_loss",
+        "reason": "LLM unavailable \u2014 auto-selected"
+      },
+      {
+        "tool": "check_invoice_amount_mismatch",
+        "reason": "LLM unavailable \u2014 auto-selected"
+      }
+    ],
+    "blocked_tools": [],
+    "next_action": "EXECUTE_AVAILABLE_CHECKS",
+    "fallback_reason": "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.8-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 22.493364387s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  description: \"Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\"\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-3.8-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 5\n}\n, retry_delay {\n  seconds: 22\n}\n]",
+    "iteration": 0,
+    "approved_tools": [
+      "check_duplicate_invoices",
+      "check_delivery_after_loss",
+      "check_invoice_amount_mismatch"
+    ],
+    "rejected_tools": []
+  },
+  "investigator_summary": {
+    "executive_summary": "Review of claim CLM-2026-0044 for Pinnacle Tech is complete. 2 integrity finding(s) identified. Claimed: $300,000.00. Supported: $275,000.00. Unsupported: $25,000.00.",
+    "recommended_actions": [
+      "Review FND-001 for invoice INV-11: Invoice INV-11 shows $100,000.00 in the purchase ledger but only $80,000.00 on the supplier invoice. The $20,000.00 difference is flagged for deduction.",
+      "Review FND-002 for invoice INV-12: Invoice INV-12 shows $50,000.00 in the purchase ledger but only $45,000.00 on the supplier invoice. The $5,000.00 difference is flagged for deduction."
+    ],
+    "disclaimer": "This output supports investigation and does not approve, deny, or determine coverage.",
+    "generated_by": "fallback_template",
+    "llm_error": "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.8-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 22.06275596s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  description: \"Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\"\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-3.8-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 5\n}\n, retry_delay {\n  seconds: 22\n}\n]"
+  }
+}

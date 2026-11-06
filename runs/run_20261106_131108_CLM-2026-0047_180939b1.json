@@ -1,0 +1,175 @@
+{
+  "run_id": "180939b1-0bfe-4b9e-9c96-d1ee0f3632d2",
+  "timestamp_utc": "2026-11-06T13:11:08.908913",
+  "claim_folder": "data/incomplete_claim_package_clm_2026_0047",
+  "status": "SUMMARY_READY",
+  "claim": {
+    "claim_profile": "CLM-2026-0047",
+    "insured": "AeroSpark Industries",
+    "loss_date": "2026-10-01",
+    "claimed_stock_amount": "600000.0",
+    "currency": "USD"
+  },
+  "financial_summary": {
+    "claimed_amount": "600000.00",
+    "supported_amount": null,
+    "identified_unsupported_amount": "60000.00",
+    "difference_amount": null,
+    "currency": "USD",
+    "calculation_complete": false,
+    "reason": "The following checks could not complete due to missing documents: DELIVERY_AFTER_LOSS_V1. A definitive supported amount cannot be calculated.",
+    "blocked_checks": [
+      "DELIVERY_AFTER_LOSS_V1"
+    ],
+    "blocked_check_reasons": [
+      "Missing: DELIVERY_RECORDS"
+    ],
+    "breakdown": [
+      {
+        "finding_id": "FND-001",
+        "reason": "DUPLICATE INVOICE",
+        "invoice": "INV-441",
+        "amount": "50000.00",
+        "description": "Invoice INV-441 appears more than once in the purchase ledger. The duplicate entry (PL-804) is flagged for deduction.",
+        "evidence": [
+          "purchase_ledger.xlsx:PL-801",
+          "purchase_ledger.xlsx:PL-804"
+        ]
+      },
+      {
+        "finding_id": "FND-001",
+        "reason": "INVOICE AMOUNT MISMATCH",
+        "invoice": "INV-442",
+        "amount": "10000.00",
+        "description": "Invoice INV-442 shows $75,000.00 in the purchase ledger but only $65,000.00 on the supplier invoice. The $10,000.00 difference is flagged for deduction.",
+        "evidence": [
+          "purchase_ledger.xlsx:PL-802",
+          "supplier_invoices.xlsx:INV-442"
+        ]
+      }
+    ]
+  },
+  "check_evaluation": {
+    "status": "PARTIALLY_COMPLETED",
+    "configured_checks": [
+      "DELIVERY_AFTER_LOSS_V1",
+      "DUPLICATE_INVOICE_V1",
+      "INVOICE_AMOUNT_MISMATCH_V1"
+    ],
+    "completed_checks": [
+      "DUPLICATE_INVOICE_V1",
+      "INVOICE_AMOUNT_MISMATCH_V1"
+    ],
+    "blocked_checks": [
+      "DELIVERY_AFTER_LOSS_V1"
+    ],
+    "failed_checks": [],
+    "pending_checks": [],
+    "all_checks_completed": false,
+    "next_action": "CALCULATE_PARTIAL_RESULT",
+    "check_summary": {
+      "configured": 3,
+      "completed": 2,
+      "blocked": 1,
+      "failed": 0,
+      "pending": 0
+    }
+  },
+  "completeness_result": {
+    "is_complete": false,
+    "completeness_pct": 80.0,
+    "required_documents": [
+      "CLAIM_FORM",
+      "DELIVERY_RECORDS",
+      "FIRE_REPORT",
+      "PURCHASE_LEDGER",
+      "SUPPLIER_INVOICES"
+    ],
+    "found_documents": [
+      "CLAIM_FORM",
+      "FIRE_REPORT",
+      "PURCHASE_LEDGER",
+      "SUPPLIER_INVOICES"
+    ],
+    "present_required": [
+      "CLAIM_FORM",
+      "FIRE_REPORT",
+      "PURCHASE_LEDGER",
+      "SUPPLIER_INVOICES"
+    ],
+    "missing_documents": [
+      "DELIVERY_RECORDS"
+    ]
+  },
+  "integrity_findings": [
+    {
+      "finding_id": "FND-001",
+      "rule_id": "DUPLICATE_INVOICE_V1",
+      "claim_line_key": "INV-441",
+      "financial_treatment": "DEDUCT_FULL_LINE",
+      "financial_impact": "50000.00",
+      "facts": {
+        "first_occurrence": "PL-801",
+        "duplicate_occurrence": "PL-804",
+        "invoice_number": "INV-441",
+        "amount": 50000.0
+      },
+      "evidence": [
+        "purchase_ledger.xlsx:PL-801",
+        "purchase_ledger.xlsx:PL-804"
+      ],
+      "description": "Invoice INV-441 appears more than once in the purchase ledger. The duplicate entry (PL-804) is flagged for deduction."
+    },
+    {
+      "finding_id": "FND-001",
+      "rule_id": "INVOICE_AMOUNT_MISMATCH_V1",
+      "claim_line_key": "INV-442",
+      "financial_treatment": "DEDUCT_DIFFERENCE",
+      "financial_impact": "10000.00",
+      "facts": {
+        "invoice_number": "INV-442",
+        "ledger_amount": "75000.00",
+        "invoice_amount": "65000.00",
+        "difference": "10000.00",
+        "ledger_id": "PL-802",
+        "supplier_name": "MetalWorks"
+      },
+      "evidence": [
+        "purchase_ledger.xlsx:PL-802",
+        "supplier_invoices.xlsx:INV-442"
+      ],
+      "description": "Invoice INV-442 shows $75,000.00 in the purchase ledger but only $65,000.00 on the supplier invoice. The $10,000.00 difference is flagged for deduction."
+    }
+  ],
+  "supervisor_plan": {
+    "selected_tools": [
+      {
+        "tool": "check_duplicate_invoices",
+        "reason": "LLM unavailable \u2014 auto-selected"
+      },
+      {
+        "tool": "check_invoice_amount_mismatch",
+        "reason": "LLM unavailable \u2014 auto-selected"
+      }
+    ],
+    "blocked_tools": [],
+    "next_action": "EXECUTE_AVAILABLE_CHECKS",
+    "fallback_reason": "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.8-flash, description: Generate content requests per day limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 18h48m51.515486623s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  description: \"Generate content requests per day limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\"\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-3.8-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 67731\n}\n]",
+    "iteration": 0,
+    "approved_tools": [
+      "check_duplicate_invoices",
+      "check_invoice_amount_mismatch"
+    ],
+    "rejected_tools": []
+  },
+  "investigator_summary": {
+    "executive_summary": "Partial review of claim CLM-2026-0047 completed. 2 finding(s) from completed checks. Definitive supported amount cannot be calculated \u2014 some checks blocked.",
+    "recommended_actions": [
+      "Review FND-001 for invoice INV-441: Invoice INV-441 appears more than once in the purchase ledger. The duplicate entry (PL-804) is flagged for deduction.",
+      "Review FND-001 for invoice INV-442: Invoice INV-442 shows $75,000.00 in the purchase ledger but only $65,000.00 on the supplier invoice. The $10,000.00 difference is flagged for deduction."
+    ],
+    "disclaimer": "This output supports investigation and does not approve, deny, or determine coverage.",
+    "generated_by": "fallback_template",
+    "llm_error": "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.8-flash, description: Generate content requests per day limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 18h48m51.090225332s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  description: \"Generate content requests per day limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\"\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-3.8-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 67731\n}\n]"
+  }
+}
