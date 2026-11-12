@@ -1,0 +1,101 @@
+# ==============================================================================
+# Azure DevOps Pipeline: ClaimRecon AI CI/CD
+# Builds Docker image, pushes to ACR, and deploys to Azure Container Apps (ACA)
+# ==============================================================================
+
+trigger:
+  branches:
+    include:
+      - main
+
+# Configure pipeline variables or link an Azure DevOps Variable Group
+variables:
+  # Name of your Azure DevOps Service Connection (Azure Resource Manager)
+  azureServiceConnection: 'Azure-Subscription-ServiceConnection'
+  
+  # Name of your Docker Registry Service Connection in Azure DevOps
+  # (Alternatively, use the ARM service connection with ACR login)
+  dockerRegistryServiceConnection: 'ACR-ServiceConnection'
+  
+  # Existing Azure Resource Details
+  resourceGroup: 'rg-claimrecon'
+  containerAppName: 'claimrecon-env-aca'
+  acrLoginServer: 'claimreconacr.azurecr.io'
+  imageRepository: 'claimrecon-ai'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+stages:
+# ─── Stage 1: Validate Code & Graph Definition ──────────────────────────────
+- stage: TestAndValidate
+  displayName: 'Test & Code Validation'
+  jobs:
+  - job: Validate
+    displayName: 'Validate Dependencies and Graph'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.11'
+      displayName: 'Set up Python 3.11'
+
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+      displayName: 'Install Requirements'
+
+    - script: |
+        python -c "from src.graph import build_graph; g = build_graph(); print('LangGraph compiled successfully!')"
+        python -c "from src.llm_factory import get_llm; print('LLM Factory imports verified.')"
+      displayName: 'Compile LangGraph & Verify Imports'
+
+# ─── Stage 2: Build and Push Container Image to ACR ─────────────────────────
+- stage: BuildAndPush
+  displayName: 'Build & Push Docker Image'
+  dependsOn: TestAndValidate
+  condition: succeeded()
+  jobs:
+  - job: DockerBuildAndPush
+    displayName: 'Docker Build & Push to ACR'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Docker@2
+      displayName: 'Build and Push image to ACR'
+      inputs:
+        command: buildAndPush
+        containerRegistry: '$(dockerRegistryServiceConnection)'
+        repository: '$(imageRepository)'
+        dockerfile: '$(dockerfilePath)'
+        tags: |
+          $(tag)
+          latest
+
+# ─── Stage 3: Deploy to Azure Container Apps ─────────────────────────────────
+- stage: Deploy
+  displayName: 'Deploy to Azure Container Apps'
+  dependsOn: BuildAndPush
+  condition: succeeded()
+  jobs:
+  - deployment: DeployApp
+    displayName: 'Update Container App Revision'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureCLI@2
+            displayName: 'Deploy updated image to Azure Container Apps'
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az containerapp update \
+                  --name $(containerAppName) \
+                  --resource-group $(resourceGroup) \
+                  --image $(acrLoginServer)/$(imageRepository):$(tag)
+

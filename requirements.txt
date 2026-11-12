@@ -3,6 +3,7 @@ langchain-google-genai>=2.0
 langchain-openai>=0.2
 langchain-anthropic>=0.2
 langchain-core>=0.3
+azure-identity>=1.16.0
 openpyxl>=3.1
 streamlit>=1.39
 python-dotenv>=1.0
