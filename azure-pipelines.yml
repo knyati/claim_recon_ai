@@ -18,7 +18,7 @@ variables:
   dockerRegistryServiceConnection: 'ACR-ServiceConnection'
   
   # Existing Azure Resource Details
-  resourceGroup: 'rg-claimrecon'
+  resourceGroup: 'az03-ins-aais-ai-build-6-ri-rg-app'
   containerAppName: 'claimrecon-env-aca'
   acrLoginServer: 'claimreconacr.azurecr.io'
   imageRepository: 'claimrecon-ai'
